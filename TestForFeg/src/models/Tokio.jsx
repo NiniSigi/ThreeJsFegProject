@@ -13,60 +13,60 @@ export const FLOOR_HEIGHT = 2.3;
 export const NG_FLOOR = 3.2;
 export function Tokio(props) {
   const ref = useRef();
-  const tl = useRef();
+  // const tl = useRef();
   const { nodes, materials, animations } = useGLTF("./models/tokio.glb");
   const { actions } = useAnimations(animations, ref);
-  const { camera } = useThree();
+  // const { camera } = useThree();
 
-  const scroll = useScroll();
+  // const scroll = useScroll();
 
-  useFrame(() => {
-    tl.current.seek(scroll.offset * tl.current.duration());
-  });
+  // useFrame(() => {
+  //   tl.current.seek(scroll.offset * tl.current.duration());
+  // });
 
   useEffect(() => {
     actions["Take 001"].play();
   }, []);
 
-  useLayoutEffect(() => {
-    tl.current = gsap.timeline();
+  // useLayoutEffect(() => {
+  //   tl.current = gsap.timeline();
 
-    tl.current
-      .from(
-        ref.current.position,
-        {
-          duration: 3,
-          y: -FLOOR_HEIGHT * (NG_FLOOR - 1),
-          ease: "power3.inOut",
-        },
-        0
-      )
-      .to(
-        camera.position,
-        {
-          duration: 2,
-          y: 0,
-          x: 0,
-          z: 10,
-          ease: "power3.inOut",
-        },
-        1
-      )
-      .to(
-        camera.position,
-        {
-          duration: 2,
-          y: 5,
-          x: 10,
-          z: 0,
-          ease: "power3.inOut",
-          on: () => {
-            camera.lookAt(0, 0, 0);
-          },
-        },
-        3
-      );
-  }, []);
+  //   tl.current
+  //     .from(
+  //       ref.current.position,
+  //       {
+  //         duration: 3,
+  //         y: -FLOOR_HEIGHT * (NG_FLOOR - 1),
+  //         ease: "power3.inOut",
+  //       },
+  //       0
+  //     )
+  //     .to(
+  //       camera.position,
+  //       {
+  //         duration: 2,
+  //         y: 0,
+  //         x: 0,
+  //         z: 10,
+  //         ease: "power3.inOut",
+  //       },
+  //       1
+  //     )
+  //     .to(
+  //       camera.position,
+  //       {
+  //         duration: 2,
+  //         y: 5,
+  //         x: 10,
+  //         z: 0,
+  //         ease: "power3.inOut",
+  //         on: () => {
+  //           camera.lookAt(0, 0, 0);
+  //         },
+  //       },
+  //       4
+  //     );
+  // }, []);
 
   return (
     <group ref={ref} {...props} dispose={null}>

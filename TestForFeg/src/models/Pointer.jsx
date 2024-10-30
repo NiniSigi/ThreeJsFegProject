@@ -1,22 +1,29 @@
-import { Html } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { useRef, useState } from "react";
 
-const Pointer = (...props) => {
+const Pointer = (props) => {
   const meshRef = useRef();
   const tl = useRef();
   const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-  const camera = useThree();
+  const { camera } = useThree();
 
-  const goToPointer = (e) => {
-    console.log(e);
+  useFrame(() => {
+    meshRef.current.lookAt(camera.position);
+  }, []);
+  const goToPointer = () => {
     tl.current = gsap.timeline();
-    tl.current.go(camera.position, {
-      y: e.position.y,
+    tl.current.to(camera.position, {
+      x: props.position[0],
+      y: props.position[1],
+      z: props.position[2],
+      duration: 2,
+      onUpdate: () => {
+        camera.lookAt(meshRef.current.position);
+      },
     });
   };
+
   return (
     <mesh
       {...props}
@@ -25,8 +32,11 @@ const Pointer = (...props) => {
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}
     >
-      <boxGeometry args={[0.09, 0.09, 0.09]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
+      <circleGeometry args={[0.09]} />
+      <meshStandardMaterial
+        color={hovered ? "red" : "lightgray"}
+        depthTest={false}
+      />
     </mesh>
   );
 };

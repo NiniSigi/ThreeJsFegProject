@@ -7,11 +7,10 @@ const Experience = () => {
   return (
     <>
       <ambientLight intensity={1} />
-      <OrbitControls enableZoom={false} />
-      <ScrollControls pages={3} damping={0.25}>
-        <Tokio />
-      </ScrollControls>
-      <Pointer position={[20, 20, 0]} />
+      <OrbitControls />
+      <Pointer position={[4, 0, 0]} />
+      <Pointer position={[1, 0, 5]} />
+      <Tokio />
     </>
   );
 };
