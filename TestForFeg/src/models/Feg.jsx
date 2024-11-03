@@ -7,7 +7,7 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
 export function Feg(props) {
-const ref = useRef();
+  const ref = useRef();
   const { nodes, materials } = useGLTF("./models/Feg.glb");
   return (
     <group ref={ref} {...props} dispose={null}>
