@@ -44,7 +44,7 @@ const Home = () => {
         >
           <Suspense fallback={<Loader />}>
             <OrbitControls ref={controlsRef} />
-            <ambientLight intensity={1} />
+            <ambientLight intensity={2} />
             <Feg />
 
             {/* Fade-In Effect for PointerHtmlTest Components */}
