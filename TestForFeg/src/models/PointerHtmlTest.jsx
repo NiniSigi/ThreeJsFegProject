@@ -10,9 +10,9 @@ const PointerHtmlButton = ({
   setOrbitControlsTarget,
   ...props
 }) => {
+  const tl = useRef();
   const [hovered, setHovered] = useState(false);
   const meshRef = useRef();
-  const tl = useRef();
   const refButton = useRef();
   const { camera } = useThree();
 
@@ -36,7 +36,7 @@ const PointerHtmlButton = ({
 
   return (
     <Html {...props} ref={meshRef}>
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center transition-all ease-in-out">
         <button
           className="flex items-center justify-center p-2 border-2 border-opacity-100 bg-blue-500 border-blue-500 border-t-blue-500 rounded-full text-white transition-all duration-300 hover:bg-opacity-80"
           onClick={goToPointer}

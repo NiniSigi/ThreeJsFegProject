@@ -1,91 +1,161 @@
-import React, { Suspense, useRef, useState } from "react";
+import { Suspense, useLayoutEffect, useRef, useState } from "react";
 import Loader from "../components/Loader";
 import PointerHtmlTest from "../models/PointerHtmlTest";
-import { IoSearchSharp } from "react-icons/io5";
+import { IoCloseSharp, IoSearchSharp } from "react-icons/io5";
 import { Feg } from "../models/Feg";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import GoInFullModelView from "../components/goInFullModelView";
+import gsap from "gsap";
 
 const Home = () => {
   const controlsRef = useRef();
+  const comp = useRef();
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [cameraPosition, setCameraPosition] = useState([5, 4, 3]);
+  const [useCameraPosition, setUseCameraPosition] = useState(true);
 
   const handleExpand = () => {
     setIsFullScreen(!isFullScreen);
+    setUseCameraPosition(!useCameraPosition);
+    gsap.context(() => {
+      const t1 = gsap.timeline();
+
+      t1.to("#main-page", {
+        autoAlpha: isFullScreen ? 1 : 0,
+        width: isFullScreen ? "66%" : "0%",
+        padding: isFullScreen ? "6rem" : "0",
+        margin: isFullScreen ? "6" : "0",
+        duration: 3,
+        ease: "power2.inOut",
+      }).to(
+        "#canvas-container",
+        {
+          width: isFullScreen ? "33%" : "100%",
+          height: isFullScreen ? "66%" : "100%",
+          margin: isFullScreen ? "6rem" : "0",
+          duration: 2.9,
+        },
+        "<"
+      );
+    }, comp);
   };
 
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const t1 = gsap.timeline();
+      t1.from("#canvas-container", {
+        height: "100%",
+        width: "100%",
+        margin: 0,
+        duration: 3,
+        delay: 3,
+      })
+        .from(
+          "#main-page",
+          2,
+          {
+            opacity: 0,
+            display: "none",
+            margin: 0,
+            padding: 0,
+            width: "0%",
+            height: "-0%",
+            duration: 3,
+          },
+          "<"
+        )
+        .from(
+          "#go-in-full-model-view",
+          {
+            opacity: 0,
+            yPercent: 10,
+            duration: 3,
+          },
+          "-=2"
+        );
+      //setUseCameraPosition(false);
+    }, comp);
+
+    return () => {
+      ctx.revert();
+    };
+  }, []);
+
   return (
-    <div className="flex w-full h-screen">
-      {/* Left Section */}
-      <section
-        className={`w-1/2 h-full flex items-center justify-center bg-gray-100 {
-          isFullScreen
-            ? "fixed top-0 left-0 w-full opacity-0 transform translate-x-0"
-            : "w-1/2 opacity-100"
-        }`}
-      >
-        <p>Test</p>
-      </section>
-
-      {/* Right Section with Expandable Animation */}
-      <section
-        className={`relative h-full transition-all duration-700 ease-in-outbg-gray-300 ${
-          isFullScreen
-            ? "flex w-full h-screen opacity-100"
-            : "w-1/2 opacity-100"
-        }`}
-      >
-        <Canvas
-          camera={{
-            fov: 64,
-            position: [0, 2, 8],
-          }}
+    <div ref={comp} className="relative">
+      <div className="flex w-full h-screen items-center justify-between">
+        <section
+          id="main-page"
+          className="flex h-screen w-2/3 opacity-100 p-6 m-6"
         >
-          <Suspense fallback={<Loader />}>
-            <OrbitControls ref={controlsRef} />
-            <ambientLight intensity={2} />
-            <Feg />
+          <p id="test">Test</p>
+        </section>
+        <section
+          id="canvas-container"
+          className="flex rounded-lg drop-shadow-lg bg-gray-300 w-1/3 opacity-100 h-2/3 mx-6"
+        >
+          <Canvas
+            camera={{
+              fov: 64,
+              position: cameraPosition,
+            }}
+          >
+            <Suspense fallback={<Loader />}>
+              {isFullScreen && <OrbitControls ref={controlsRef} />}
+              <ambientLight intensity={2} />
+              <Feg
+                isFullScreen={isFullScreen}
+                cameraPosition={cameraPosition}
+                useCameraPosition={useCameraPosition}
+                setUseCameraPosition={setUseCameraPosition}
+              />
+              {isFullScreen && (
+                <>
+                  <PointerHtmlTest
+                    text="Gottesdienst Saal"
+                    position={[0.13, 0.22, -0.04]}
+                    lookAtPosition={[-0.96, 0.38, 1.14]}
+                    setOrbitControlsTarget={controlsRef}
+                  >
+                    <IoSearchSharp />
+                  </PointerHtmlTest>
 
-            {/* Fade-In Effect for PointerHtmlTest Components */}
-            {isFullScreen && (
-              <>
-                <PointerHtmlTest
-                  text="Gottesdienst Saal"
-                  position={[0.13, 0.22, -0.04]}
-                  lookAtPosition={[-0.96, 0.38, 1.14]}
-                  setOrbitControlsTarget={controlsRef}
-                >
-                  <IoSearchSharp />
-                </PointerHtmlTest>
+                  <PointerHtmlTest
+                    text="Eingang"
+                    position={[-0.3, 0.05, -0.68]}
+                    lookAtPosition={[0.1, 0.08, -0.68]}
+                    setOrbitControlsTarget={controlsRef}
+                  >
+                    <IoSearchSharp />
+                  </PointerHtmlTest>
 
-                <PointerHtmlTest
-                  text="Eingang"
-                  position={[-0.3, 0.05, -0.68]}
-                  lookAtPosition={[0.1, 0.08, -0.68]}
-                  setOrbitControlsTarget={controlsRef}
-                >
-                  <IoSearchSharp />
-                </PointerHtmlTest>
+                  <PointerHtmlTest
+                    text="Merzweksall"
+                    position={[0.46, 0.21, -0.54]}
+                    lookAtPosition={[1.18, 0.2, -0.48]}
+                    setOrbitControlsTarget={controlsRef}
+                  >
+                    <IoSearchSharp />
+                  </PointerHtmlTest>
+                </>
+              )}
+            </Suspense>
+          </Canvas>
 
-                <PointerHtmlTest
-                  text="Merzweksall"
-                  position={[0.46, 0.21, -0.54]}
-                  lookAtPosition={[1.18, 0.2, -0.48]}
-                  setOrbitControlsTarget={controlsRef}
-                >
-                  <IoSearchSharp />
-                </PointerHtmlTest>
-              </>
+          <GoInFullModelView
+            id="go-in-full-model-view"
+            text={isFullScreen ? "Close" : "Explore"}
+            onClick={handleExpand}
+          >
+            {isFullScreen ? (
+              <IoCloseSharp className="w-5 h-5" />
+            ) : (
+              <IoSearchSharp className="w-5 h-5" />
             )}
-          </Suspense>
-        </Canvas>
-
-        {/* Expand Button */}
-        <GoInFullModelView text="Explore" onClick={handleExpand}>
-          <IoSearchSharp className="w-5 h-5" />
-        </GoInFullModelView>
-      </section>
+          </GoInFullModelView>
+        </section>
+      </div>
     </div>
   );
 };
