@@ -71,14 +71,8 @@ export function Feg({
   return (
     <group {...props} dispose={null}>
       <group position={[-2.031, 0.268, -0.139]}>
-        <mesh
-          geometry={nodes.Mesh_3238.geometry}
-          material={materials.Material}
-        />
-        <mesh
-          geometry={nodes.Mesh_3238_1.geometry}
-          material={materials.Outline}
-        />
+        <mesh geometry={nodes.Mesh_3238.geometry} material={materials.Material} />
+        <mesh geometry={nodes.Mesh_3238_1.geometry} material={materials.Outline} />
       </group>
     </group>
   );
